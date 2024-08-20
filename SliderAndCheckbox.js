@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './SliderAndCheckbox.css'; // Import the CSS file for styling
+import './src/SliderAndCheckbox.css'; // Import the CSS file for styling
 
 const SliderAndCheckbox = ({
   images,
