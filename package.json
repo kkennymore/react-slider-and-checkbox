@@ -1,0 +1,29 @@
+{
+  "name": "react-slider-and-checkbox",
+  "version": "1.0.0",
+  "description": "This is a slider and checkbox package",
+  "main": "SliderAndCheckbox.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkennymore/react-slider-and-checkbox.git"
+  },
+  "keywords": [
+    "slider",
+    "checkbox",
+    "content",
+    "slider",
+    "images",
+    "slider",
+    "image",
+    "checkbox"
+  ],
+  "author": "Engr Usiobaifo A Kenneth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kkennymore/react-slider-and-checkbox/issues"
+  },
+  "homepage": "https://github.com/kkennymore/react-slider-and-checkbox#readme"
+}
