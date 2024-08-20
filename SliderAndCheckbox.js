@@ -1,8 +1,6 @@
-// react-slider-and-checkbox/src/SliderAndCheckbox.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './src/SliderAndCheckbox.css'; // Import a CSS file for styling
+import './src/SliderAndCheckbox.css';
 
 const SliderAndCheckbox = ({
   images,
@@ -22,15 +20,8 @@ const SliderAndCheckbox = ({
   thumbnailPadding = '4px',
   animationDuration = 300,
   isOverlaySlider = false,
-  subTitleAnimationType,
-  titleAnimationType,
-  imageAnimationType,
-  thumbnailAnimationType,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState(0);
-  const [autoScrollTimer, setAutoScrollTimer] = useState(null);
-  const [interactionTimer, setInteractionTimer] = useState(null);
   const pageRef = useRef(null);
 
   useEffect(() => {
@@ -44,81 +35,43 @@ const SliderAndCheckbox = ({
 
   const startAutoScroll = () => {
     const timer = setInterval(() => {
-      if (isOverlaySlider) {
-        setNextIndex((prevIndex) => (prevIndex + 1) % images.length);
-        animateToPage(nextIndex);
-      } else {
-        nextPage();
-      }
+      nextPage();
     }, 3000);
     setAutoScrollTimer(timer);
   };
 
-  const resetAutoScroll = () => {
-    clearTimers();
-    const timer = setTimeout(() => {
-      if (autoScroll) {
-        startAutoScroll();
-      }
-    }, 6000);
-    setInteractionTimer(timer);
-  };
-
   const clearTimers = () => {
     if (autoScrollTimer) clearInterval(autoScrollTimer);
-    if (interactionTimer) clearTimeout(interactionTimer);
-  };
-
-  const animateToPage = (index) => {
-    setNextIndex(index);
-    setTimeout(() => {
-      setCurrentIndex(nextIndex);
-    }, animationDuration);
   };
 
   const nextPage = () => {
-    resetAutoScroll();
     const newIndex = (currentIndex + 1) % images.length;
     setCurrentIndex(newIndex);
   };
 
   const prevPage = () => {
-    resetAutoScroll();
     const newIndex = (currentIndex - 1 + images.length) % images.length;
     setCurrentIndex(newIndex);
   };
 
   const handleThumbnailClick = (index) => {
-    resetAutoScroll();
-    if (isOverlaySlider) {
-      animateToPage(index);
-    } else {
-      setCurrentIndex(index);
-      pageRef.current.scrollTo({
-        left: pageRef.current.scrollWidth * (index / images.length),
-        behavior: 'smooth',
-      });
-    }
+    setCurrentIndex(index);
+    pageRef.current.scrollTo({
+      left: pageRef.current.scrollWidth * (index / images.length),
+      behavior: 'smooth',
+    });
   };
 
   return (
     <div className="slider-and-checkbox">
       <div className="slider-container">
         <div className="slider">
-          {isOverlaySlider ? (
-            <OverlaySlider
-              images={images}
-              currentIndex={currentIndex}
-              nextIndex={nextIndex}
-              animateToPage={animateToPage}
-            />
-          ) : (
-            <PageView
-              images={images}
-              currentIndex={currentIndex}
-              pageRef={pageRef}
-            />
-          )}
+          <PageView
+            images={images}
+            currentIndex={currentIndex}
+            pageRef={pageRef}
+            imageBorderRadius={imageBorderRadius}
+          />
         </div>
         {showControls && (
           <>
@@ -185,43 +138,31 @@ SliderAndCheckbox.propTypes = {
   thumbnailPadding: PropTypes.string,
   animationDuration: PropTypes.number,
   isOverlaySlider: PropTypes.bool,
-  subTitleAnimationType: PropTypes.string,
-  titleAnimationType: PropTypes.string,
-  imageAnimationType: PropTypes.string,
-  thumbnailAnimationType: PropTypes.string,
 };
 
-const PageView = ({ images, currentIndex, pageRef }) => (
+const PageView = ({ images, currentIndex, pageRef, imageBorderRadius }) => (
   <div
     className="page-view"
     ref={pageRef}
-    style={{ display: 'flex', overflowX: 'scroll', scrollBehavior: 'smooth' }}
+    style={{
+      display: 'flex',
+      overflowX: 'hidden',
+      scrollBehavior: 'smooth',
+      whiteSpace: 'nowrap',
+    }}
   >
     {images.map((image, index) => (
       <img
         key={index}
         src={image.imageUrl}
         alt={image.title}
-        style={{ flexShrink: 0, width: '100%', borderRadius: '0px' }}
+        style={{
+          flexShrink: 0,
+          width: '100%',
+          borderRadius: imageBorderRadius,
+        }}
       />
     ))}
-  </div>
-);
-
-const OverlaySlider = ({ images, currentIndex, nextIndex, animateToPage }) => (
-  <div className="overlay-slider">
-    <img
-      src={images[currentIndex].imageUrl}
-      alt={images[currentIndex].title}
-      style={{ width: '100%', height: '100%' }}
-    />
-    {currentIndex !== nextIndex && (
-      <img
-        src={images[nextIndex].imageUrl}
-        alt={images[nextIndex].title}
-        style={{ width: '100%', height: '100%' }}
-      />
-    )}
   </div>
 );
 
