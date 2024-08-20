@@ -1,59 +1,41 @@
-/* react-slider-and-checkbox/src/SliderAndCheckbox.css */
-
 .slider-and-checkbox {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .slider-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .slider {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .page-view {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .overlay-slider {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .control {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .prev {
-    left: 8px;
-  }
-  
-  .next {
-    right: 8px;
-  }
-  
-  .thumbnails {
-    display: flex;
-    overflow-x: auto;
-    padding: 8px 0;
-  }
-  
-  .thumbnails img {
-    margin: 4px;
-    cursor: pointer;
-  }
-  
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-container {
+  position: relative;
+}
+
+.page-view {
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+
+.page-view::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.control.prev {
+  left: 10px;
+}
+
+.control.next {
+  right: 10px;
+}
+
+.thumbnails {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
