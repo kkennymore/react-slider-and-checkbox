@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './src/SliderAndCheckbox.css';
+import './src/SliderAndCheckbox.css'; // Import the CSS file for styling
 
 const SliderAndCheckbox = ({
   images,
@@ -20,8 +20,13 @@ const SliderAndCheckbox = ({
   thumbnailPadding = '4px',
   animationDuration = 300,
   isOverlaySlider = false,
+  subTitleAnimationType = 'fadeInUp', // Added default animation types
+  titleAnimationType = 'fadeInDown',
+  imageAnimationType = 'fadeIn',
+  thumbnailAnimationType = 'fadeIn',
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [autoScrollTimer, setAutoScrollTimer] = useState(null);
   const pageRef = useRef(null);
 
   useEffect(() => {
@@ -29,19 +34,15 @@ const SliderAndCheckbox = ({
       startAutoScroll();
     }
     return () => {
-      clearTimers();
+      clearInterval(autoScrollTimer);
     };
-  }, [autoScroll]);
+  }, [autoScroll, currentIndex]);
 
   const startAutoScroll = () => {
     const timer = setInterval(() => {
       nextPage();
     }, 3000);
     setAutoScrollTimer(timer);
-  };
-
-  const clearTimers = () => {
-    if (autoScrollTimer) clearInterval(autoScrollTimer);
   };
 
   const nextPage = () => {
@@ -56,22 +57,51 @@ const SliderAndCheckbox = ({
 
   const handleThumbnailClick = (index) => {
     setCurrentIndex(index);
-    pageRef.current.scrollTo({
-      left: pageRef.current.scrollWidth * (index / images.length),
-      behavior: 'smooth',
-    });
   };
 
   return (
     <div className="slider-and-checkbox">
       <div className="slider-container">
         <div className="slider">
-          <PageView
-            images={images}
-            currentIndex={currentIndex}
-            pageRef={pageRef}
-            imageBorderRadius={imageBorderRadius}
-          />
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`slider-image ${index === currentIndex ? 'active' : ''}`}
+              style={{
+                backgroundImage: `url(${image.imageUrl})`,
+                borderRadius: imageBorderRadius,
+                transition: `opacity ${animationDuration}ms ease-in-out`,
+                opacity: index === currentIndex ? 1 : 0,
+              }}
+            >
+              {showOverlayText && (
+                <div className="overlay-text">
+                  <h2
+                    className={`overlay-title animated ${titleAnimationType}`}
+                    style={{
+                      color: overlayTextColor,
+                      fontSize: overlayTextSize,
+                      fontWeight: overlayTextWeight,
+                      animationDuration: `${animationDuration}ms`,
+                    }}
+                  >
+                    {image.title}
+                  </h2>
+                  <p
+                    className={`overlay-subtitle animated ${subTitleAnimationType}`}
+                    style={{
+                      color: overlayTextColor,
+                      fontSize: overlayTextSize,
+                      fontWeight: overlayTextWeight,
+                      animationDuration: `${animationDuration}ms`,
+                    }}
+                  >
+                    {image.subtitle}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         {showControls && (
           <>
@@ -99,11 +129,13 @@ const SliderAndCheckbox = ({
               key={index}
               src={image.imageUrl}
               alt={image.title}
+              className={`thumbnail animated ${thumbnailAnimationType}`}
               style={{
                 width: thumbnailSize,
                 height: thumbnailSize,
                 borderRadius: thumbnailBorderRadius,
                 margin: thumbnailPadding,
+                opacity: index === currentIndex ? 1 : 0.5,
               }}
               onClick={() => handleThumbnailClick(index)}
             />
@@ -138,32 +170,10 @@ SliderAndCheckbox.propTypes = {
   thumbnailPadding: PropTypes.string,
   animationDuration: PropTypes.number,
   isOverlaySlider: PropTypes.bool,
+  subTitleAnimationType: PropTypes.string,
+  titleAnimationType: PropTypes.string,
+  imageAnimationType: PropTypes.string,
+  thumbnailAnimationType: PropTypes.string,
 };
-
-const PageView = ({ images, currentIndex, pageRef, imageBorderRadius }) => (
-  <div
-    className="page-view"
-    ref={pageRef}
-    style={{
-      display: 'flex',
-      overflowX: 'hidden',
-      scrollBehavior: 'smooth',
-      whiteSpace: 'nowrap',
-    }}
-  >
-    {images.map((image, index) => (
-      <img
-        key={index}
-        src={image.imageUrl}
-        alt={image.title}
-        style={{
-          flexShrink: 0,
-          width: '100%',
-          borderRadius: imageBorderRadius,
-        }}
-      />
-    ))}
-  </div>
-);
 
 export default SliderAndCheckbox;
